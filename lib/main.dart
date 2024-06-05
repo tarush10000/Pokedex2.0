@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:image_picker/image_picker.dart';
@@ -143,7 +144,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final List<PokemonData> _photos = [];
 
   void _navigateTo(int index) {
     switch (index) {
@@ -158,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 1:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ListScreen(photos: _photos)),
+          MaterialPageRoute(builder: (context) => const ListScreen()),
         );
         break;
       case 2:
@@ -237,9 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 class SearchScreen extends StatefulWidget {
   final String apiKey;
-
-  const SearchScreen(
-      {super.key, required this.apiKey});
+  const SearchScreen({super.key, required this.apiKey});
 
   @override
   _SearchScreenState createState() => _SearchScreenState();
@@ -437,6 +435,21 @@ class _SearchScreenState extends State<SearchScreen> {
                               ),
                             ),
                           ),
+                          Column(
+                            children: [
+                              ButtonBar(
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () => speak(),
+                                    style: ElevatedButton.styleFrom(
+                                      foregroundColor: Colors.white, backgroundColor: Colors.red,
+                                    ),
+                                    child: const Icon(Icons.play_arrow_outlined, color: Colors.white,),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )
                         ],
                       ),
                       Row(
@@ -496,7 +509,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 actions: [
                   TextButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => okPressed(),
                     child: const Text('OK'),
                   ),
                 ],
@@ -701,9 +714,8 @@ class _SearchScreenState extends State<SearchScreen> {
     return Scaffold(
       backgroundColor: Colors.red,
       appBar: AppBar(
-        title:
-            const Text('Search', style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.red,
+        title: const Text('Search', style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold)),
+        backgroundColor: const Color.fromRGBO(204, 50, 42, 100),
       ),
       body: Theme(
         data: ThemeData(
@@ -787,27 +799,252 @@ class _SearchScreenState extends State<SearchScreen> {
   debugPrint('List: $list');
   return list.isNotEmpty;
 }
+  speak() async {
+    debugPrint('Speaking');
+    const platform = MethodChannel('ttschannel');
+    debugPrint(platform.toString());
+    try {
+      platform.invokeMethod('speak', {'text': _description});
+      debugPrint('Spoke');
+    } on PlatformException catch (e) {
+      debugPrint("Failed to invoke method: '${e.message}'.");
+    }
+  }
+  
+  okPressed() async {
+    debugPrint('OK Pressed');
+    Navigator.pop(context);
+    const platform = MethodChannel('ttschannel');
+    try {
+      await platform.invokeMethod('pause');
+    } on PlatformException catch (e) {
+      debugPrint("Failed to invoke method: '${e.message}'.");
+    }
+  }
 }
 
-class ListScreen extends StatelessWidget {
-  final List<PokemonData> photos;
+class ListScreen extends StatefulWidget {
+  const ListScreen({super.key});
 
-  const ListScreen({super.key, required this.photos});
+  @override
+  _ListScreenState createState() => _ListScreenState();
+}
+
+class _ListScreenState extends State<ListScreen> {
+  List<PokemonData> _pokemonList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPokemonData();
+  }
+
+  Future<void> _loadPokemonData() async {
+    final database = await openDatabase('pokedex.db');
+    final List<Map<String, dynamic>> maps = await database.query('photos');
+
+    setState(() {
+      _pokemonList = List.generate(maps.length, (i) {
+        return PokemonData(
+          name: maps[i]['name'],
+          image: File(maps[i]['image']),
+          HP: maps[i]['HP'],
+          Attack: maps[i]['Attack'],
+          Defense: maps[i]['Defense'],
+          SpAttack: maps[i]['SpAttack'],
+          SpDefense: maps[i]['SpDefense'],
+          Speed: maps[i]['Speed'],
+          Type: maps[i]['Type'],
+          Ability: maps[i]['Ability'],
+          Description: maps[i]['Description'],
+        );
+      });
+    });
+  }
+
+  void _showPokemonDetails(PokemonData pokemon) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          pokemon.name,
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Center(
+                    child: SizedBox(
+                      width: 150.0,
+                      height: 150.0,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 15.0),
+                        child: Center(
+                          child: Image.file(
+                            pokemon.image,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      ButtonBar(
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {}, // Add your speak() function here
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.red,
+                            ),
+                            child: const Icon(
+                              Icons.play_arrow_outlined,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  )
+                ],
+              ),
+              Row(
+                children: [
+                  Center(
+                    child: SizedBox(
+                      width: 120,
+                      height: 120,
+                      child: SpiderChart(
+                        data: [
+                          pokemon.HP.toDouble(),
+                          pokemon.Attack.toDouble(),
+                          pokemon.Defense.toDouble(),
+                          pokemon.SpAttack.toDouble(),
+                          pokemon.SpDefense.toDouble(),
+                          pokemon.Speed.toDouble(),
+                        ],
+                        maxValue: 150,
+                        colors: const <Color>[
+                          Colors.red,
+                          Colors.green,
+                          Colors.blue,
+                          Colors.yellow,
+                          Colors.indigo,
+                          Colors.orange,
+                        ],
+                      ),
+                    ),
+                  ),
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('HP: ${pokemon.HP}'),
+                          Text('Attack: ${pokemon.Attack}'),
+                          Text('Defense: ${pokemon.Defense}'),
+                          Text('Special Attack: ${pokemon.SpAttack}'),
+                          Text('Special Defense: ${pokemon.SpDefense}'),
+                          Text('Speed: ${pokemon.Speed}'),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const Text('Type:', style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold)),
+              Text(pokemon.Type),
+              const Text('Abilities:', style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold)),
+              Text(pokemon.Ability),
+              const Text('Description:', style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold)),
+              Text(pokemon.Description),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('List'),
+        title: const Text('List', style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold)),
+        backgroundColor: const Color.fromARGB(255, 204, 50, 42),
       ),
-      body: ListView.builder(
-        itemCount: photos.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            leading: Image.file(photos[index].image),
-            title: Text(photos[index].name),
-          );
-        },
+      body: Container(
+        color: Colors.red,
+        child: ListView.builder(
+                itemCount: _pokemonList.length,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      ListTile(
+                        leading: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              '#${index + 1}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 30,
+                              ),
+                            ),
+                            const SizedBox(width: 10), // Spacing between number and image
+                            Container(
+                              width: 50,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.white, width: 1),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(5),
+                                child: Image.file(
+                                  _pokemonList[index].image,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        title: Text(
+                          _pokemonList[index].name,
+                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          _pokemonList[index].Type,
+                          style: const TextStyle(color: Colors.white, fontStyle: FontStyle.italic),
+                        ),
+                        onTap: () => _showPokemonDetails(_pokemonList[index]),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        height: 1,
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        color: Colors.white.withOpacity(0.5),
+                      ),
+                    ],
+                  );
+                },
+              )
+
       ),
     );
   }
@@ -816,52 +1053,58 @@ class ListScreen extends StatelessWidget {
 class SettingsScreen extends StatelessWidget {
   final String apiKey;
 
-  const SettingsScreen(
-      {super.key, required this.apiKey});
+  const SettingsScreen({super.key, required this.apiKey});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: const Text('Settings', style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold)),
+        backgroundColor: const Color.fromARGB(255, 204, 50, 42),
       ),
-      body: Padding(
+      body: Container(
+        color: Colors.red,
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.red, backgroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+              ),
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        UpdateApiKeyScreen(currentApiKey: apiKey),
+                    builder: (context) => UpdateApiKeyScreen(currentApiKey: apiKey),
                   ),
                 );
               },
-              child: const Text('Change API Key'),
+              child: const Text('Change API Key', style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             const SizedBox(height: 16),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.red, backgroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+              ),
               onPressed: () {
                 cleanDatabase();
                 ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Photo list cleared')));
               },
-              child: const Text('Clear Photo List'),
+              child: const Text('Clear Photo List', style: TextStyle(fontWeight: FontWeight.bold)),
             ),
           ],
         ),
       ),
     );
   }
-  
-  void cleanDatabase() {
-  final db = openDatabase('pokedex.db');
-  db.then((database) {
-    database.delete('photos');
-  });
+
+  void cleanDatabase() async {
+    final db = await openDatabase('pokedex.db');
+    await db.delete('photos');
   }
 }
 
@@ -869,50 +1112,63 @@ class UpdateApiKeyScreen extends StatefulWidget {
   final String currentApiKey;
 
   const UpdateApiKeyScreen({super.key, required this.currentApiKey});
+
   @override
   _UpdateApiKeyScreenState createState() => _UpdateApiKeyScreenState();
 }
 
 class _UpdateApiKeyScreenState extends State<UpdateApiKeyScreen> {
-  final TextEditingController _apiKeyController = TextEditingController();
+  late TextEditingController _controller;
 
   @override
   void initState() {
     super.initState();
-    _apiKeyController.text = widget.currentApiKey;
+    _controller = TextEditingController(text: widget.currentApiKey);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Update API Key'),
+        title: const Text('Update API Key', style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.red,
       ),
-      body: Padding(
+      body: Container(
+        color: Colors.red,
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
-              controller: _apiKeyController,
-              decoration: const InputDecoration(labelText: 'Enter New API Key'),
+              controller: _controller,
+              decoration: const InputDecoration(
+                labelText: 'API Key',
+                labelStyle: TextStyle(color: Colors.white, fontStyle: FontStyle.italic),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+              ),
+              style: const TextStyle(color: Colors.white),
+              cursorColor: Colors.white,
             ),
             const SizedBox(height: 16),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.red, backgroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+              ),
               onPressed: () {
-                _updateApiKey(_apiKeyController.text);
+                // Save the new API key and go back
+                Navigator.pop(context, _controller.text);
               },
-              child: const Text('Update API Key'),
+              child: const Text('Save', style: TextStyle(fontWeight: FontWeight.bold)),
             ),
           ],
         ),
       ),
     );
-  }
-
-  Future<void> _updateApiKey(String newApiKey) async {
-    const storage = FlutterSecureStorage();
-    await storage.write(key: 'API_KEY', value: newApiKey);
-    Navigator.pop(context); // Navigate back after updating the API key
   }
 }
