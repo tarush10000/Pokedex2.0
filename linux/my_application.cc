@@ -6,6 +6,7 @@
 #endif
 
 #include "flutter/generated_plugin_registrant.h"
+#include "text_to_speech_plugin.h"
 
 struct _MyApplication {
   GtkApplication parent_instance;
@@ -121,4 +122,11 @@ MyApplication* my_application_new() {
                                      "application-id", APPLICATION_ID,
                                      "flags", G_APPLICATION_NON_UNIQUE,
                                      nullptr));
+}
+
+
+void fl_register_plugins(FlPluginRegistry* registry) {
+  g_autoptr(FlPluginRegistrar) text_to_speech_registrar =
+      fl_plugin_registry_get_registrar_for_plugin(registry, "TextToSpeechPlugin");
+  text_to_speech_plugin_register_with_registrar(text_to_speech_registrar);
 }

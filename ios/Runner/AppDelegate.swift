@@ -8,6 +8,7 @@ import UIKit
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     GeneratedPluginRegistrant.register(with: self)
+    TextToSpeechHandler.register(with: self.registrar(forPlugin: "TextToSpeechHandler"))
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }
