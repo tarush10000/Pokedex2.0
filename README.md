@@ -13,7 +13,7 @@ Here's a quick overview of the tech stack used in this project:
 - **Flutter:** The main framework for building the app.
 - **Dart:** The programming language used.
 - **SQLite (via sqflite):** For local database storage.
-- **Google Generative AI:** For performing analysis over text and image prompt
+- **Google Gemini 1.5 Pro AI:** For performing analysis over text and image prompt
 - **Flutter Secure Storage:** For securely storing the Gemini API key.
 - **Kotlin, Swift, C++:** For platform-specific code for Text-To-Speech Functionality
 
