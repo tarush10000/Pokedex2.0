@@ -181,15 +181,15 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.red,
+      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
       appBar: AppBar(
         title: const Text('Pokedex 2.0', style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold)),
-        backgroundColor: const Color.fromRGBO(204, 50, 42, 100),
+        backgroundColor: const Color.fromARGB(255, 219, 0, 0),
       ),
       drawer: Drawer(
         width: 90,
         child: Container(
-          color: Colors.red,
+          color: const Color.fromARGB(255, 219, 0, 0),
           child: Center(
             child: ListView(
               padding: EdgeInsets.zero,
@@ -421,100 +421,124 @@ class _SearchScreenState extends State<SearchScreen> {
                       Row(
                         children: [
                           Center(
-                            child: SizedBox(
+                            child: Container(
                               width: 150.0,
                               height: 150.0,
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 15.0),
-                                child: Center(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(color: Colors.grey.withOpacity(0.5)),
+                                ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
                                   child: Image.file(
                                     _image!,
                                     fit: BoxFit.contain,
                                   ),
                                 ),
-                              ),
                             ),
                           ),
                           Column(
                             children: [
-                              ButtonBar(
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: () => speak(),
-                                    style: ElevatedButton.styleFrom(
-                                      foregroundColor: Colors.white, backgroundColor: Colors.red,
-                                    ),
-                                    child: const Icon(Icons.play_arrow_outlined, color: Colors.white,),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ElevatedButton(
+                                  onPressed: () => speak(),
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.white,
+                                    backgroundColor: const Color.fromARGB(255, 219, 0, 0),
                                   ),
-                                ],
+                                  child: const Icon(
+                                    Icons.play_arrow_outlined,
+                                    color: Colors.white,
+                                  ),
+                                ),
                               ),
                             ],
-                          )
+                          ),
                         ],
                       ),
+                      const SizedBox(height: 16),
                       Row(
                         children: [
-                          Center(
-                            child: SizedBox(
-                              width: 120,
-                              height: 120,
-                              child: SpiderChart(
-                                data: [
-                                  hp / 1,
-                                  attack / 1,
-                                  defense / 1,
-                                  spAttack / 1,
-                                  spDefense / 1,
-                                  speed / 1,
-                                ],
-                                maxValue: 150, // the maximum value that you want to represent (essentially sets the data scale of the chart)
-                                colors: const <Color>[
-                                  Colors.red,
-                                  Colors.green,
-                                  Colors.blue,
-                                  Colors.yellow,
-                                  Colors.indigo,
-                                  Colors.orange,
-                                ],
+                          SizedBox(
+                                width: 120,
+                                height: 120,
+                                child: SpiderChart(
+                                  data: [
+                                    hp.toDouble(),
+                                    attack.toDouble(),
+                                    defense.toDouble(),
+                                    spAttack.toDouble(),
+                                    spDefense.toDouble(),
+                                    speed.toDouble(),
+                                  ],
+                                  maxValue: 150,
+                                  colors: const <Color>[
+                                    Colors.red,
+                                    Colors.green,
+                                    Colors.blue,
+                                    Colors.yellow,
+                                    Colors.indigo,
+                                    Colors.orange,
+                                  ],
+                                ),
                               ),
-                            ),
-                          ),
-                          Center(
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: Column(
+                              const SizedBox(width: 16),
+                              Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('HP: $hp'),
-                                  Text('Attack: $attack'),
-                                  Text('Defense: $defense'),
-                                  Text('Special Attack: $spAttack'),
-                                  Text('Special Defense: $spDefense'),
-                                  Text('Speed: $speed'),
+                                  Text('HP: $hp}', style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+                                  Text('Attack: $attack', style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+                                  Text('Defense: $defense', style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+                                  Text('Sp. Attack: $spAttack', style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+                                  Text('Sp. Defense: $spDefense', style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+                                  Text('Speed: $speed', style: TextStyle(fontSize: 14, color: Colors.grey[700])),
                                 ],
                               ),
-                            ),
-                          ),
                         ],
                       ),
-
-                      const Text('Type:', style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold)),
-                      Text(response3Text),
-                      const Text('Abilities:', style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold)),
-                      Text(_abilities),
-                      const Text('Description:', style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold)),
-                      Text(_description),
-                    ],
+                      const SizedBox(height: 16),
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: _getGradientForType(_type),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('Type:', style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold)),
+                            Text(_type, style: const TextStyle(color: Colors.white)),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                        const Text(
+                          'Abilities:',
+                          style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          _abilities,
+                          style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Description:',
+                          style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          _description,
+                          style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                        ),
+                        TextButton(
+                          onPressed: () => okPressed(),
+                          child: const Text('OK'),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                actions: [
-                  TextButton(
-                    onPressed: () => okPressed(),
-                    child: const Text('OK'),
-                  ),
-                ],
-              ),
-            );
+              );
         }
         catch(error){
           Navigator.of(_dialogContext).pop();
@@ -563,74 +587,119 @@ class _SearchScreenState extends State<SearchScreen> {
                     Row(
                       children: [
                         Center(
-                          child: SizedBox(
-                            width: 150.0,
-                            height: 150.0,
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 15.0),
-                              child: Center(
-                                child: Image.file(
-                                  _image!,
-                                  fit: BoxFit.contain,
+                          child: Container(
+                              width: 150.0,
+                              height: 150.0,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(color: Colors.grey.withOpacity(0.5)),
+                                ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                  child: Image.file(
+                                    _image!,
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
+                            ),
+                        ),
+                        Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ElevatedButton(
+                                  onPressed: () => speak(),
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.white,
+                                    backgroundColor: const Color.fromARGB(255, 219, 0, 0),
+                                  ),
+                                  child: const Icon(
+                                    Icons.play_arrow_outlined,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                        ),
                       ],
                     ),
+                    const SizedBox(height: 16),
                     Row(
                       children: [
-                        Center(
-                          child: SizedBox(
-                            width: 120,
-                            height: 120,
-                            child: SpiderChart(
-                              data: [
-                                hp / 1,
-                                attack / 1,
-                                defense / 1,
-                                spAttack / 1,
-                                spDefense / 1,
-                                speed / 1,
-                              ],
-                              maxValue: 150, // the maximum value that you want to represent (essentially sets the data scale of the chart)
-                              colors: const <Color>[
-                                Colors.red,
-                                Colors.green,
-                                Colors.blue,
-                                Colors.yellow,
-                                Colors.indigo,
-                                Colors.orange,
-                              ],
-                            ),
-                          ),
-                        ),
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('HP: $hp'),
-                                Text('Attack: $attack'),
-                                Text('Defense: $defense'),
-                                Text('Special Attack: $spAttack'),
-                                Text('Special Defense: $spDefense'),
-                                Text('Speed: $speed'),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
+                          SizedBox(
+                                width: 120,
+                                height: 120,
+                                child: SpiderChart(
+                                  data: [
+                                    hp.toDouble(),
+                                    attack.toDouble(),
+                                    defense.toDouble(),
+                                    spAttack.toDouble(),
+                                    spDefense.toDouble(),
+                                    speed.toDouble(),
+                                  ],
+                                  maxValue: 150,
+                                  colors: const <Color>[
+                                    Colors.red,
+                                    Colors.green,
+                                    Colors.blue,
+                                    Colors.yellow,
+                                    Colors.indigo,
+                                    Colors.orange,
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('HP: $hp}', style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+                                  Text('Attack: $attack', style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+                                  Text('Defense: $defense', style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+                                  Text('Sp. Attack: $spAttack', style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+                                  Text('Sp. Defense: $spDefense', style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+                                  Text('Speed: $speed', style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+                                ],
+                              ),
+                        ],
                     ),
-
-                    const Text('Type:', style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold)),
-                    Text(response3Text),
-                    const Text('Abilities:', style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold)),
-                    Text(_abilities),
-                    const Text('Description:', style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold)),
-                    Text(_description),
+                    const SizedBox(height: 16),
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: _getGradientForType(_type),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('Type:', style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold)),
+                            Text(_type, style: const TextStyle(color: Colors.white)),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                        const Text(
+                          'Abilities:',
+                          style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          _abilities,
+                          style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Description:',
+                          style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          _description,
+                          style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                        ),
+                        TextButton(
+                          onPressed: () => okPressed(),
+                          child: const Text('OK'),
+                        ),
                   ],
                 ),
               ),
@@ -672,18 +741,18 @@ class _SearchScreenState extends State<SearchScreen> {
         _dialogContext = context;
         return AlertDialog(
           title: const Text('Searching', style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),),
-          iconColor: Colors.red,
+          iconColor: const Color.fromARGB(255, 224, 50, 59),
           alignment: Alignment.center,
           buttonPadding: EdgeInsets.zero,
           shadowColor: Colors.black,
-          backgroundColor: Colors.red,
+          backgroundColor: const Color.fromARGB(255, 224, 50, 59),
           content: const Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Center(child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 color: Colors.white,
-                backgroundColor: Colors.red,
+                backgroundColor: Color.fromARGB(255, 224, 50, 59),
               )),
               Center(child: SizedBox(height: 16)),
             ],
@@ -712,14 +781,14 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: Colors.red,
+      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
       appBar: AppBar(
         title: const Text('Search', style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold)),
-        backgroundColor: const Color.fromRGBO(204, 50, 42, 100),
+        backgroundColor: const Color.fromARGB(255, 219, 0, 0),
       ),
       body: Theme(
         data: ThemeData(
-          primaryColor: Colors.red,
+          primaryColor: const Color.fromARGB(255, 219, 0, 0),
           textTheme: const TextTheme(
             bodyLarge: TextStyle(color: Colors.white),
             bodyMedium: TextStyle(color: Colors.white),
@@ -751,7 +820,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ElevatedButton(
                   onPressed: _openImagePicker,
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.red,
+                    foregroundColor: const Color.fromARGB(255, 219, 0, 0),
                     backgroundColor: Colors.white, // Icon color
                     shape: const CircleBorder(), // Make the button circular
                     padding:
@@ -759,7 +828,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                   child: const Icon(
                     Icons.camera,
-                    color: Colors.red, // Icon color
+                    color: Color.fromARGB(255, 219, 0, 0), // Icon color
                   ),
                 ),
               ],
@@ -821,6 +890,46 @@ class _SearchScreenState extends State<SearchScreen> {
       debugPrint("Failed to invoke method: '${e.message}'.");
     }
   }
+  
+  _getGradientForType(String type) {
+    Map<String, List<Color>> typeColors = {
+      'Fire': [Colors.red],
+      'Water': [Colors.blue],
+      'Grass': [Colors.green],
+      'Electric': [Colors.yellow],
+      'Steel': [Colors.grey],
+      'Ice': [Colors.cyan],
+      'Psychic': [Colors.purple],
+      'Dragon': [Colors.indigo],
+      'Dark': [Colors.black87],
+      'Fairy': [Colors.pink],
+      'Fighting': [Colors.brown],
+      'Flying': [Colors.lightBlueAccent],
+      'Poison': [Colors.purple],
+      'Ground': [Colors.brown],
+      'Rock': [Colors.brown],
+      'Bug': [Colors.lightGreen],
+      'Ghost': [Colors.deepPurple],
+    };
+
+    List<String> types = type.split('/');
+    if (types.length == 2) {
+      return LinearGradient(
+        colors: [
+          ...?typeColors[types[0]],
+          ...?typeColors[types[1]],
+        ],
+      );
+    } else if (types.length == 1) {
+      return LinearGradient(
+        colors: typeColors[types[0]] ?? [Colors.white, Colors.white],
+      );
+    } else {
+      return const LinearGradient(
+        colors: [Colors.white, Colors.white],
+      );
+    }
+  }
 }
 
 class ListScreen extends StatefulWidget {
@@ -862,10 +971,11 @@ class _ListScreenState extends State<ListScreen> {
     });
   }
 
-  void _showPokemonDetails(PokemonData pokemon) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
+void _showPokemonDetails(PokemonData pokemon) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
         title: Text(
           pokemon.name,
           style: const TextStyle(
@@ -874,110 +984,200 @@ class _ListScreenState extends State<ListScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Center(
-                    child: SizedBox(
-                      width: 150.0,
-                      height: 150.0,
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 15.0),
-                        child: Center(
-                          child: Image.file(
-                            pokemon.image,
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Column(
-                    children: [
-                      ButtonBar(
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {}, // Add your speak() function here
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors.red,
-                            ),
-                            child: const Icon(
-                              Icons.play_arrow_outlined,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  )
-                ],
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255), // Make background transparent to show gradient
+        contentPadding: EdgeInsets.zero,
+        content: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 5),
               ),
-              Row(
-                children: [
-                  Center(
-                    child: SizedBox(
-                      width: 120,
-                      height: 120,
-                      child: SpiderChart(
-                        data: [
-                          pokemon.HP.toDouble(),
-                          pokemon.Attack.toDouble(),
-                          pokemon.Defense.toDouble(),
-                          pokemon.SpAttack.toDouble(),
-                          pokemon.SpDefense.toDouble(),
-                          pokemon.Speed.toDouble(),
-                        ],
-                        maxValue: 150,
-                        colors: const <Color>[
-                          Colors.red,
-                          Colors.green,
-                          Colors.blue,
-                          Colors.yellow,
-                          Colors.indigo,
-                          Colors.orange,
-                        ],
-                      ),
-                    ),
-                  ),
-                  Center(
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SingleChildScrollView(
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
+                      padding: const EdgeInsets.all(16.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('HP: ${pokemon.HP}'),
-                          Text('Attack: ${pokemon.Attack}'),
-                          Text('Defense: ${pokemon.Defense}'),
-                          Text('Special Attack: ${pokemon.SpAttack}'),
-                          Text('Special Defense: ${pokemon.SpDefense}'),
-                          Text('Speed: ${pokemon.Speed}'),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 150,
+                                height: 150,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(color: Colors.grey.withOpacity(0.5)),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.file(
+                                    pokemon.image,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () => speak(pokemon.Description),
+                                    style: ElevatedButton.styleFrom(
+                                      foregroundColor: Colors.white,
+                                      backgroundColor: Colors.red,
+                                      shape: const CircleBorder(),
+                                      padding: const EdgeInsets.all(12),
+                                    ),
+                                    child: const Icon(
+                                      Icons.play_arrow_outlined,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 120,
+                                height: 120,
+                                child: SpiderChart(
+                                  data: [
+                                    pokemon.HP.toDouble(),
+                                    pokemon.Attack.toDouble(),
+                                    pokemon.Defense.toDouble(),
+                                    pokemon.SpAttack.toDouble(),
+                                    pokemon.SpDefense.toDouble(),
+                                    pokemon.Speed.toDouble(),
+                                  ],
+                                  maxValue: 150,
+                                  colors: const <Color>[
+                                    Colors.red,
+                                    Colors.green,
+                                    Colors.blue,
+                                    Colors.yellow,
+                                    Colors.indigo,
+                                    Colors.orange,
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('HP: ${pokemon.HP}', style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+                                  Text('Attack: ${pokemon.Attack}', style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+                                  Text('Defense: ${pokemon.Defense}', style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+                                  Text('Sp. Attack: ${pokemon.SpAttack}', style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+                                  Text('Sp. Defense: ${pokemon.SpDefense}', style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+                                  Text('Speed: ${pokemon.Speed}', style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+                                ],
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          Container(
+                            decoration: BoxDecoration(
+                              gradient: _getGradientForType(pokemon.Type),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Type:',
+                                  style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  pokemon.Type,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'Abilities:',
+                            style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            pokemon.Ability,
+                            style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'Description:',
+                            style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            pokemon.Description,
+                            style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                          ),
+                          TextButton(
+                            onPressed: () => okPressed(),
+                            child: const Text('OK'),
+                          ),
                         ],
                       ),
                     ),
                   ),
-                ],
-              ),
-              const Text('Type:', style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold)),
-              Text(pokemon.Type),
-              const Text('Abilities:', style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold)),
-              Text(pokemon.Ability),
-              const Text('Description:', style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold)),
-              Text(pokemon.Description),
-            ],
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
-          ),
+      );
+    },
+  );
+}
+
+
+  LinearGradient _getGradientForType(String type) {
+    Map<String, List<Color>> typeColors = {
+      'Fire': [Colors.red],
+      'Water': [Colors.blue],
+      'Grass': [Colors.green],
+      'Electric': [Colors.yellow],
+      'Steel': [Colors.grey],
+      'Ice': [Colors.cyan],
+      'Psychic': [Colors.purple],
+      'Dragon': [Colors.indigo],
+      'Dark': [Colors.black87],
+      'Fairy': [Colors.pink],
+      'Fighting': [Colors.brown],
+      'Flying': [Colors.lightBlueAccent],
+      'Poison': [Colors.purple],
+      'Ground': [Colors.brown],
+      'Rock': [Colors.brown],
+      'Bug': [Colors.lightGreen],
+      'Ghost': [Colors.deepPurple],
+    };
+
+    List<String> types = type.split('/');
+    if (types.length == 2) {
+      return LinearGradient(
+        colors: [
+          ...?typeColors[types[0]],
+          ...?typeColors[types[1]],
         ],
-      ),
-    );
+      );
+    } else if (types.length == 1) {
+      return LinearGradient(
+        colors: typeColors[types[0]] ?? [Colors.white, Colors.white],
+      );
+    } else {
+      return const LinearGradient(
+        colors: [Colors.white, Colors.white],
+      );
+    }
   }
 
   @override
@@ -985,10 +1185,10 @@ class _ListScreenState extends State<ListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('List', style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold)),
-        backgroundColor: const Color.fromARGB(255, 204, 50, 42),
+        backgroundColor: const Color.fromARGB(255, 219, 0, 0),
       ),
       body: Container(
-        color: Colors.red,
+        color: const Color.fromARGB(255, 0, 0, 0),
         child: ListView.builder(
                 itemCount: _pokemonList.length,
                 itemBuilder: (context, index) {
@@ -1001,7 +1201,7 @@ class _ListScreenState extends State<ListScreen> {
                             Text(
                               '#${index + 1}',
                               style: const TextStyle(
-                                color: Colors.white,
+                                color: Color.fromARGB(255, 191, 6, 3),
                                 fontWeight: FontWeight.bold,
                                 fontSize: 30,
                               ),
@@ -1011,7 +1211,7 @@ class _ListScreenState extends State<ListScreen> {
                               width: 50,
                               height: 50,
                               decoration: BoxDecoration(
-                                border: Border.all(color: Colors.white, width: 1),
+                                border: Border.all(color: Colors.white, width: 0.5),
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: ClipRRect(
@@ -1030,7 +1230,7 @@ class _ListScreenState extends State<ListScreen> {
                         ),
                         subtitle: Text(
                           _pokemonList[index].Type,
-                          style: const TextStyle(color: Colors.white, fontStyle: FontStyle.italic),
+                          style: const TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
                         ),
                         onTap: () => _showPokemonDetails(_pokemonList[index]),
                       ),
@@ -1048,6 +1248,29 @@ class _ListScreenState extends State<ListScreen> {
       ),
     );
   }
+  
+  speak(String description) {
+    debugPrint('Speaking');
+    const platform = MethodChannel('ttschannel');
+    debugPrint(platform.toString());
+    try {
+      platform.invokeMethod('speak', {'text': description});
+      debugPrint('Spoke');
+    } on PlatformException catch (e) {
+      debugPrint("Failed to invoke method: '${e.message}'.");
+    }
+  }
+  
+  okPressed() async {
+    debugPrint('OK Pressed');
+    Navigator.pop(context);
+    const platform = MethodChannel('ttschannel');
+    try {
+      await platform.invokeMethod('pause');
+    } on PlatformException catch (e) {
+      debugPrint("Failed to invoke method: '${e.message}'.");
+    }
+  }
 }
 
 class SettingsScreen extends StatelessWidget {
@@ -1060,17 +1283,17 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings', style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold)),
-        backgroundColor: const Color.fromARGB(255, 204, 50, 42),
+        backgroundColor: const Color.fromARGB(255, 182, 32, 24),
       ),
       body: Container(
-        color: Colors.red,
+        color: const Color.fromARGB(255, 224, 50, 59),
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.red, backgroundColor: Colors.white,
+                foregroundColor: const Color.fromARGB(255, 224, 50, 59), backgroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
               ),
               onPressed: () {
@@ -1086,7 +1309,7 @@ class SettingsScreen extends StatelessWidget {
             const SizedBox(height: 16),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.red, backgroundColor: Colors.white,
+                foregroundColor: const Color.fromARGB(255, 224, 50, 59), backgroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
               ),
               onPressed: () {
@@ -1131,10 +1354,10 @@ class _UpdateApiKeyScreenState extends State<UpdateApiKeyScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Update API Key', style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.red,
+        backgroundColor: const Color.fromARGB(255, 182, 32, 24),
       ),
       body: Container(
-        color: Colors.red,
+        color: const Color.fromARGB(255, 224, 50, 59),
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1157,7 +1380,7 @@ class _UpdateApiKeyScreenState extends State<UpdateApiKeyScreen> {
             const SizedBox(height: 16),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.red, backgroundColor: Colors.white,
+                foregroundColor: const Color.fromARGB(255, 224, 50, 59), backgroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
               ),
               onPressed: () {
