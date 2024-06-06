@@ -1354,10 +1354,10 @@ class _UpdateApiKeyScreenState extends State<UpdateApiKeyScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Update API Key', style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold)),
-        backgroundColor: const Color.fromARGB(255, 182, 32, 24),
+        backgroundColor: const Color.fromARGB(255, 219, 0, 0),
       ),
       body: Container(
-        color: const Color.fromARGB(255, 224, 50, 59),
+        color: const Color.fromARGB(255, 0, 0, 0),
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1380,7 +1380,7 @@ class _UpdateApiKeyScreenState extends State<UpdateApiKeyScreen> {
             const SizedBox(height: 16),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                foregroundColor: const Color.fromARGB(255, 224, 50, 59), backgroundColor: Colors.white,
+                foregroundColor: const Color.fromARGB(255, 219, 0, 0), backgroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
               ),
               onPressed: () {
