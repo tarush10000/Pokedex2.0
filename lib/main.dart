@@ -893,23 +893,23 @@ class _SearchScreenState extends State<SearchScreen> {
   
   _getGradientForType(String type) {
     Map<String, List<Color>> typeColors = {
-      'Fire': [Colors.red],
-      'Water': [Colors.blue],
-      'Grass': [Colors.green],
-      'Electric': [Colors.yellow],
-      'Steel': [Colors.grey],
-      'Ice': [Colors.cyan],
-      'Psychic': [Colors.purple],
-      'Dragon': [Colors.indigo],
-      'Dark': [Colors.black87],
-      'Fairy': [Colors.pink],
-      'Fighting': [Colors.brown],
-      'Flying': [Colors.lightBlueAccent],
-      'Poison': [Colors.purple],
-      'Ground': [Colors.brown],
-      'Rock': [Colors.brown],
-      'Bug': [Colors.lightGreen],
-      'Ghost': [Colors.deepPurple],
+      'Fire': [Colors.red, Colors.red],
+      'Water': [Colors.blue, Colors.blue],
+      'Grass': [Colors.green, Colors.green],
+      'Electric': [Colors.yellow, Colors.yellow],
+      'Steel': [Colors.grey, Colors.grey],
+      'Ice': [Colors.cyan, Colors.cyan],
+      'Psychic': [Colors.purple, Colors.purple],
+      'Dragon': [Colors.indigo, Colors.indigo],
+      'Dark': [Colors.black87, Colors.black87],
+      'Fairy': [Colors.pink, Colors.pink],
+      'Fighting': [Colors.brown, Colors.brown],
+      'Flying': [Colors.lightBlueAccent, Colors.lightBlueAccent],
+      'Poison': [Colors.purple, Colors.purple],
+      'Ground': [Colors.brown, Colors.brown],
+      'Rock': [Colors.brown, Colors.brown],
+      'Bug': [Colors.lightGreen, Colors.lightGreen],
+      'Ghost': [Colors.deepPurple, Colors.deepPurple],
     };
 
     List<String> types = type.split('/');
@@ -1142,23 +1142,23 @@ void _showPokemonDetails(PokemonData pokemon) {
 
   LinearGradient _getGradientForType(String type) {
     Map<String, List<Color>> typeColors = {
-      'Fire': [Colors.red],
-      'Water': [Colors.blue],
-      'Grass': [Colors.green],
-      'Electric': [Colors.yellow],
-      'Steel': [Colors.grey],
-      'Ice': [Colors.cyan],
-      'Psychic': [Colors.purple],
-      'Dragon': [Colors.indigo],
-      'Dark': [Colors.black87],
-      'Fairy': [Colors.pink],
-      'Fighting': [Colors.brown],
-      'Flying': [Colors.lightBlueAccent],
-      'Poison': [Colors.purple],
-      'Ground': [Colors.brown],
-      'Rock': [Colors.brown],
-      'Bug': [Colors.lightGreen],
-      'Ghost': [Colors.deepPurple],
+      'Fire': [Colors.red, Colors.red],
+      'Water': [Colors.blue, Colors.blue],
+      'Grass': [Colors.green, Colors.green],
+      'Electric': [Colors.yellow, Colors.yellow],
+      'Steel': [Colors.grey, Colors.grey],
+      'Ice': [Colors.cyan, Colors.cyan],
+      'Psychic': [Colors.purple, Colors.purple],
+      'Dragon': [Colors.indigo, Colors.indigo],
+      'Dark': [Colors.black87, Colors.black87],
+      'Fairy': [Colors.pink, Colors.pink],
+      'Fighting': [Colors.brown, Colors.brown],
+      'Flying': [Colors.lightBlueAccent, Colors.lightBlueAccent],
+      'Poison': [Colors.purple, Colors.purple],
+      'Ground': [Colors.brown, Colors.brown],
+      'Rock': [Colors.brown, Colors.brown],
+      'Bug': [Colors.lightGreen, Colors.lightGreen],
+      'Ghost': [Colors.deepPurple, Colors.deepPurple],
     };
 
     List<String> types = type.split('/');
@@ -1283,17 +1283,17 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings', style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold)),
-        backgroundColor: const Color.fromARGB(255, 182, 32, 24),
+        backgroundColor: const Color.fromARGB(255, 219, 0, 0),
       ),
       body: Container(
-        color: const Color.fromARGB(255, 224, 50, 59),
+        color: const Color.fromARGB(255, 0, 0, 0),
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                foregroundColor: const Color.fromARGB(255, 224, 50, 59), backgroundColor: Colors.white,
+                foregroundColor: const Color.fromARGB(255, 219, 0, 0), backgroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
               ),
               onPressed: () {
@@ -1309,7 +1309,7 @@ class SettingsScreen extends StatelessWidget {
             const SizedBox(height: 16),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                foregroundColor: const Color.fromARGB(255, 224, 50, 59), backgroundColor: Colors.white,
+                foregroundColor: const Color.fromARGB(255, 219, 0, 0), backgroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
               ),
               onPressed: () {
